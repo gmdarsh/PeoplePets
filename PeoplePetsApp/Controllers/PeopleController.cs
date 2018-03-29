@@ -10,14 +10,10 @@ using PeoplePetsApp.Model;
 
 namespace PeoplePetsApp.Controllers
 {
-    [Produces("application/json")]
-    //[Route("api/People")]
+    [Produces("application/json")]    
     [Route("api/[controller]")]
     public class PeopleController : Controller
-    {
-               
-
-        // GET: api/People
+    {        
         [HttpGet]
         public async Task<IActionResult> GetPerson()
         {
@@ -52,7 +48,15 @@ namespace PeoplePetsApp.Controllers
             {
                 var resultPetResults = from p in (peopleContext  as OkObjectResult).Value as List<Person>
                                        group p by p.Gender into g
-                                       select new PetFilterByOwnerGenderResult() { Gender = g.Key, Pets = g.Any(s => s.Pets != null && s.Pets.Any(d => d.Type.Equals(petType, StringComparison.OrdinalIgnoreCase))) ? g.Where(s => s.Pets != null).SelectMany(s => s.Pets.Where(d => d.Type.Equals(petType, StringComparison.OrdinalIgnoreCase))).OrderBy(x => x.Name).ToList() : null };
+                                       select new PetFilterByOwnerGenderResult()
+                                       {
+                                           Gender = g.Key,
+                                           Pets = g.Any(s => s.Pets != null && 
+                                           s.Pets.Any(d => d.Type.Equals(petType, StringComparison.OrdinalIgnoreCase))) ? 
+                                           g.Where(s => s.Pets != null)
+                                           .SelectMany(s => s.Pets.Where(d => d.Type.Equals(petType, StringComparison.OrdinalIgnoreCase)))
+                                           .OrderBy(x => x.Name).ToList() : null
+                                       };
                 return resultPetResults;
             }
 
@@ -61,9 +65,5 @@ namespace PeoplePetsApp.Controllers
        
     }
 
-    public class PetFilterByOwnerGenderResult
-    {
-        public string Gender;
-        public List<Pet> Pets;
-    }
+   
 }

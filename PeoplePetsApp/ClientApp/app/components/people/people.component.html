@@ -3,10 +3,9 @@
 <p>This component demonstrates fetching data from  HTTP Client</p>
 
 <input type="text" [(ngModel)]="petType" width="50" />
-<button md-button (click)="loadPets()">update</button>
+<button md-button (click)="loadPets()">Search</button>
 
 <p *ngIf="!petResult"><em>Loading...</em></p>
-
 
 <div *ngIf="petResult">
     <ul class="table">
@@ -22,19 +21,3 @@
 
 </div>
 
-<!--<table class='table' *ngIf="people">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Gender</th>
-            <th>Age</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let person of people">
-            <td>{{ person.name }}</td>
-            <td>{{ person.gender }}</td>
-            <td>{{ person.age }}</td>
-        </tr>
-    </tbody>
-</table>-->
