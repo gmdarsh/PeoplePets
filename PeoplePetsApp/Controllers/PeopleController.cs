@@ -15,12 +15,16 @@ namespace PeoplePetsApp.Controllers
     public class PeopleController : Controller
     {        
         [HttpGet]
-        public async Task<IActionResult> GetPerson()
+        public async Task<IEnumerable<Person>> GetPeople()
         {
-            //return _context.Person;
+            return await GetAllPeople();
+        }
+
+        private static async Task<IEnumerable<Person>> GetAllPeople()
+        {
             using (System.Net.Http.HttpClient client = new System.Net.Http.HttpClient())
-            {                
-                var response = await client.GetAsync("http://agl-developer-test.azurewebsites.net/people.json");
+            {
+                var response = await client.GetAsync(PeoplePetsApp.Properties.Resources.DefaultDataUrl);
                 if (response != null)
                 {
                     var value = await response.Content.ReadAsStringAsync();
@@ -29,24 +33,24 @@ namespace PeoplePetsApp.Controllers
                         var result = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Person>>(value);
 
                         if (result != null)
-                        {                             
-                            return Ok(result.OrderBy(s => s.Name).ToList());
+                        {
+                            return result.OrderBy(s => s.Name).ToList();
                         }
                     }
                 }
-            }             
+            }
 
-            return NotFound();
+            return new List<Person>();
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<PetFilterByOwnerGenderResult> GetPetsByOwnerGender(string petType)
+        public async Task<IEnumerable<PetFilterByOwnerGenderResult>> GetPetsByOwnerGender(string petType)
         {
-            var peopleContext = GetPerson().Result;
+            var peopleContext = await GetPeople();
 
-            if (peopleContext is OkObjectResult && (peopleContext as OkObjectResult).Value is List<Person>)
+            if (peopleContext is List<Person>)
             {
-                var resultPetResults = from p in (peopleContext  as OkObjectResult).Value as List<Person>
+                var resultPetResults = from p in (peopleContext  as List<Person>)
                                        group p by p.Gender into g
                                        select new PetFilterByOwnerGenderResult()
                                        {
