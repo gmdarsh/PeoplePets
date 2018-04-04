@@ -29,6 +29,7 @@ namespace PeoplePetsUnitTests
         }
 
         [TestMethod]
+        //Filtering Test
         public async Task GetPetsByGenderAndPetType()
         {
             var result = await peopleController.GetPetsByOwnerGender("cat");
@@ -46,5 +47,23 @@ namespace PeoplePetsUnitTests
             }
 
         }
+
+        [TestMethod]
+        //Ordering Test
+        public async Task GetPetsSortByName()
+        {
+            var result = await peopleController.GetPetsByOwnerGender("cat");
+
+            if (result.Any())
+            {
+                Assert.AreEqual(result.FirstOrDefault().Gender.ToLower(), "female");
+                Assert.IsNotNull(result.FirstOrDefault().Pets);
+                var expectedList = result.FirstOrDefault().Pets.OrderBy(x => x.Name);
+                Assert.IsTrue(expectedList.SequenceEqual(result.FirstOrDefault().Pets));
+            }            
+
+        }
+
+      
     }
 }
